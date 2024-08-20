@@ -1,0 +1,79 @@
+---
+title: "eds221-interactive_sesionday7"
+format: html
+editor: visual
+---
+
+## Day 7 interactive session 
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+library(lubridate)
+library(ggplot2)
+```
+
+## **2. Data wrangling refresher**
+
+**Refresher 1:** Starting with the `penguins` dataset in the `palmerpenguins` package, write a single piped sequence in which you:
+
+1.  Only include penguins at Biscoe and Dream islands
+
+2.  Remove the `year` and `sex` variables
+
+3.  Add a new column called `body_mass_kg`, with penguin mass converted from grams to kilograms
+
+4.  Rename the `island` variable to `location`
+
+```{r}
+
+penguins<- palmerpenguins::penguins
+
+
+penguins_filter <- penguins %>% 
+filter(island %in% c("Biscoe", "Dream")) %>% 
+select(-year,-sex) %>% 
+  mutate(body_mass_kg=body_mass_g *0.001) %>% 
+  rename(location=island)
+
+
+
+
+
+```
+
+**Refresher 2:** Staring with the `penguins` dataset in the `palmerpenguins` package, write a single piped sequence in which you:
+
+1.  Limit to only Adelie penguins
+
+2.  Remove any observations where `flipper_length_mm` is `NA` (hint: `!is.na()`)
+
+3.  Group the data by `sex`
+
+4.  Find the mean (`mean()`), standard deviation (`sd`) and sample size (`n`) of flipper_length_mm for male and female Adelie penguins, returned in a nice summary table
+
+```{r}
+penguins_adelie <- penguins %>% filter(species %in% c("Adelie")) %>% filter(!is.na(flipper_length_mm)) %>%
+  group_by(sex) %>% 
+  summarise(mean = mean(flipper_length_mm, na.rm=TRUE), #to make one table summarizing all
+  sd = sd(flipper_length_mm,na.rm=TRUE), 
+  sample=n() #it counts the number of sample
+  )
+
+penguins_adelie2 <- penguins %>% filter(species == "Adelie") %>%
+  filter(!is.na(flipper_length_mm)) %>%
+  group_by(sex) %>%
+  summarise(
+    mean_flipper_length = mean(flipper_length_mm,na.rm=TRUE),
+    sd_flipper_length = sd(flipper_length_mm,na.rm=TRUE),
+    sample_size = n()
+  )
+
+penguins_adelie3 <- penguins %>% filter(species == "Adelie" & !is.na(flipper_length_mm)) %>%
+  group_by(sex) %>%
+  summarise(
+    mean_flipper_length = mean(flipper_length_mm),
+    sd_flipper_length = sd(flipper_length_mm),
+    sample_size = n()
+  )
+```
